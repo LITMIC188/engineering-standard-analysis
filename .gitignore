@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+run/
+StudyVault/
+.tutor-work/
+development-evidence/
+.test-tmp/
+_adapter_work/
+tmp*/

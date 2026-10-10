@@ -1,0 +1,21 @@
+{
+  "schema_version": "2.0",
+  "plan_id": "EXAMPLE-PLAN",
+  "plan_version": "DRAFT",
+  "tests": [
+    {
+      "test_id": "TEST-001",
+      "title": "演示试验项目（非真实标准）",
+      "method": "方案已有实验步骤",
+      "conditions": null,
+      "equipment": null,
+      "sample": null,
+      "acceptance_criteria": null,
+      "records": null,
+      "source": {
+        "file": "placeholder-plan.md",
+        "section": "EXAMPLE"
+      }
+    }
+  ]
+}

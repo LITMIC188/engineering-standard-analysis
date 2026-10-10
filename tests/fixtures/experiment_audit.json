@@ -1,0 +1,47 @@
+{
+  "schema_version": "2.0",
+  "plan_id": "EXAMPLE-PLAN",
+  "items": [
+    {
+      "audit_id": "AUD-001",
+      "requirement_id": "REQ-001",
+      "test_ids": [
+        "TEST-001"
+      ],
+      "status": "partial",
+      "severity": "major",
+      "rationale": "测试名称出现，但方案未列出可核实的操作条件",
+      "standard_source": "EXAMPLE-STD EXAMPLE-1 (演示占位，无真实原文)",
+      "plan_evidence": "TEST-001 演示标题",
+      "recommendation": "核对真实标准后补充该标准明确要求的条件，勿推定数值",
+      "review_status": "draft",
+      "checkpoints": [
+        {
+          "dimension": "method",
+          "status": "matched",
+          "standard_basis": "演示标准方法（无真实原文）",
+          "plan_basis": "TEST-001 方案已有实验步骤"
+        },
+        {
+          "dimension": "conditions",
+          "status": "missing",
+          "standard_basis": "演示要求存在条件（无真实原文）",
+          "plan_basis": null
+        }
+      ]
+    },
+    {
+      "audit_id": "AUD-002",
+      "requirement_id": "REQ-002",
+      "test_ids": [],
+      "status": "missing",
+      "severity": "major",
+      "rationale": "演示清单中未记录保存数据步骤",
+      "standard_source": "EXAMPLE-STD EXAMPLE-2 (演示占位，无真实原文)",
+      "plan_evidence": null,
+      "recommendation": "依据真实标准要求评估是否增设数据记录",
+      "review_status": "draft",
+      "checkpoints": []
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Engineering Standard Analysis"
+  short_description: "工程标准双语解析、实验方案差距审查与本地来源证据追溯"
+  default_prompt: "使用 $engineering-standard-analysis 读取原始标准与现有实验方案，按条款双语对齐、提取要求、审查实验步骤与判定准则，并输出有页码来源的审查矩阵和整改建议。"

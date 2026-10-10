@@ -1,0 +1,39 @@
+{
+  "schema_version": "2.0",
+  "standard_id": "EXAMPLE-STD",
+  "edition": "20XX",
+  "requirements": [
+    {
+      "requirement_id": "REQ-001",
+      "clause_id": "EXAMPLE-1",
+      "summary": "演示：按标准指定条件执行测试（非真实要求）",
+      "requirement_level": "mandatory",
+      "applicability": "applicable",
+      "source_verified": false,
+      "review_status": "draft",
+      "source": {
+        "file": "placeholder-do-not-use.pdf",
+        "sha256": "not-a-real-hash",
+        "pdf_page": 1,
+        "standard_id": "EXAMPLE-STD",
+        "edition": "20XX"
+      }
+    },
+    {
+      "requirement_id": "REQ-002",
+      "clause_id": "EXAMPLE-2",
+      "summary": "演示：保存数据（非真实要求）",
+      "requirement_level": "mandatory",
+      "applicability": "applicable",
+      "source_verified": false,
+      "review_status": "draft",
+      "source": {
+        "file": "placeholder-do-not-use.pdf",
+        "sha256": "not-a-real-hash",
+        "pdf_page": 2,
+        "standard_id": "EXAMPLE-STD",
+        "edition": "20XX"
+      }
+    }
+  ]
+}

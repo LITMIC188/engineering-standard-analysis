@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ESA experiment protocol audit v2",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "plan_id",
+    "items"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.0"
+    },
+    "plan_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "audit_id",
+          "requirement_id",
+          "test_ids",
+          "status",
+          "severity",
+          "rationale",
+          "standard_source",
+          "plan_evidence",
+          "recommendation",
+          "review_status",
+          "checkpoints"
+        ],
+        "properties": {
+          "audit_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "requirement_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "test_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "enum": [
+              "aligned",
+              "partial",
+              "missing",
+              "conflict",
+              "not_assessable",
+              "not_applicable"
+            ]
+          },
+          "severity": {
+            "enum": [
+              "critical",
+              "major",
+              "minor",
+              "unknown"
+            ]
+          },
+          "rationale": {
+            "type": "string"
+          },
+          "standard_source": {
+            "type": "string"
+          },
+          "plan_evidence": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "recommendation": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "review_status": {
+            "enum": [
+              "draft",
+              "source_checked",
+              "engineering_reviewed",
+              "approved",
+              "blocked"
+            ]
+          },
+          "checkpoints": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "dimension",
+                "status",
+                "standard_basis",
+                "plan_basis"
+              ],
+              "properties": {
+                "dimension": {
+                  "enum": [
+                    "test_item",
+                    "method",
+                    "conditions",
+                    "sample",
+                    "equipment",
+                    "calibration",
+                    "preconditioning",
+                    "environment",
+                    "measurement",
+                    "duration",
+                    "sequence",
+                    "acceptance_criteria",
+                    "records",
+                    "other"
+                  ]
+                },
+                "status": {
+                  "enum": [
+                    "matched",
+                    "missing",
+                    "conflict",
+                    "unknown",
+                    "not_required"
+                  ]
+                },
+                "standard_basis": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "plan_basis": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            }
+          },
+          "review_record": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "reviewer": {
+                "type": "string"
+              },
+              "reviewed_at": {
+                "type": "string"
+              },
+              "approval_evidence": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

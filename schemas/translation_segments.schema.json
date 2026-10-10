@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ESA aligned translation blocks v2",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "segments"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.0"
+    },
+    "segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "block_id",
+          "clause_id",
+          "pdf_page",
+          "source_lang",
+          "target_lang",
+          "original_text",
+          "translated_text",
+          "protected_tokens",
+          "human_reviewed"
+        ],
+        "properties": {
+          "block_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "clause_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pdf_page": {
+            "type": ["integer", "null"],
+            "minimum": 1
+          },
+          "source": {"type": "object", "properties": {"page_kind": {"type": "string"}, "locator": {"type": "string"}}},
+          "source_quote": {"type": "string", "minLength": 1},
+          "review_record": {"type": "object", "required": ["reviewer", "reviewed_at", "approval_evidence"], "properties": {"reviewer": {"type": "string", "minLength": 1}, "reviewed_at": {"type": "string", "minLength": 1}, "approval_evidence": {"type": "string", "minLength": 1}}},
+          "source_lang": {
+            "type": "string",
+            "minLength": 2
+          },
+          "target_lang": {
+            "type": "string",
+            "minLength": 2
+          },
+          "original_text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "translated_text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "protected_tokens": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "human_reviewed": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

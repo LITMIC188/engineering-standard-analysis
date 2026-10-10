@@ -1,0 +1,18 @@
+{
+  "schema_version": "2.0",
+  "segments": [
+    {
+      "block_id": "B0001",
+      "clause_id": "EXAMPLE-1",
+      "pdf_page": 1,
+      "source_lang": "en",
+      "target_lang": "zh-CN",
+      "original_text": "EXAMPLE shall record 5 kPa. (demo only)",
+      "translated_text": "演示应记录 5 kPa。（仅为演示）",
+      "protected_tokens": [
+        "5 kPa"
+      ],
+      "human_reviewed": true
+    }
+  ]
+}

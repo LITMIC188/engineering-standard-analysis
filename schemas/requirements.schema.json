@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ESA standard requirements v2",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "standard_id",
+    "edition",
+    "requirements"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.0"
+    },
+    "standard_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "edition": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "requirement_id",
+          "clause_id",
+          "summary",
+          "applicability",
+          "source",
+          "source_verified",
+          "review_status"
+        ],
+        "properties": {
+          "requirement_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "clause_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1
+          },
+          "requirement_level": {
+            "enum": [
+              "mandatory",
+              "recommended",
+              "permitted",
+              "informative",
+              "unknown"
+            ]
+          },
+          "applicability": {
+            "enum": [
+              "applicable",
+              "conditional",
+              "not_applicable",
+              "unknown"
+            ]
+          },
+          "test_criteria": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "source_verified": {
+            "type": "boolean"
+          },
+          "review_status": {
+            "enum": [
+              "draft",
+              "source_checked",
+              "engineering_reviewed",
+              "approved",
+              "blocked"
+            ]
+          },
+          "source": {
+            "type": "object",
+            "required": [
+              "file",
+              "sha256",
+              "standard_id",
+              "edition",
+              "pdf_page"
+            ],
+            "properties": {
+              "file": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "minLength": 1
+              },
+              "standard_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "edition": {
+                "type": "string",
+                "minLength": 1
+              },
+              "pdf_page": {
+                "type": ["integer", "null"],
+                "minimum": 1
+              },
+              "page_kind": {"type": "string", "enum": ["pdf", "html", "docx", "xlsx", "text", "section", "other"]},
+              "locator": {"type": ["string", "null"]},
+              "quote": {"type": ["string", "null"]},
+              "printed_page": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "table_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "figure_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

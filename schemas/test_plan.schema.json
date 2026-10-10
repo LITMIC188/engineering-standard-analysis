@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ESA test plan v2",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "plan_id",
+    "plan_version",
+    "tests"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.0"
+    },
+    "plan_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "plan_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "test_id",
+          "title",
+          "source"
+        ],
+        "properties": {
+          "test_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "file": {"type": "string"},
+              "section": {"type": ["string", "null"]},
+              "clause_id": {"type": ["string", "null"]},
+              "pdf_page": {"type": ["integer", "null"], "minimum": 1},
+              "page_kind": {"type": ["string", "null"]},
+              "locator": {"type": ["string", "null"]},
+              "quote": {"type": ["string", "null"]}
+            }
+          },
+          "test_item": {
+            "type": ["string", "null", "array", "object"]
+          },
+          "method": {
+            "type": ["string", "null", "array", "object"]
+          },
+          "sequence": {
+            "type": ["string", "null", "array", "object"]
+          },
+          "conditions": {
+            "type": ["string", "null", "array", "object"]
+          },
+          "sample": {
+            "type": ["string", "null", "array", "object"]
+          },
+          "equipment": {
+            "type": ["string", "null", "array", "object"]
+          },
+          "calibration": {"type": ["string", "null", "array", "object"]},
+          "preconditioning": {"type": ["string", "null", "array", "object"]},
+          "environment": {"type": ["string", "null", "array", "object"]},
+          "duration": {"type": ["string", "null", "array", "object"]},
+          "operation": {"type": ["string", "null", "array", "object"]},
+          "measurement_method": {"type": ["string", "null", "array", "object"]},
+          "records": {"type": ["string", "null", "array", "object"]},
+          "test_item_id": {"type": ["string", "null"]},
+          "sample_id": {"type": ["string", "null"]},
+          "equipment_id": {"type": ["string", "null"]},
+          "notes": {"type": ["string", "null"]},
+          "measurement": {
+            "type": ["string", "null", "array", "object"]
+          },
+          "measurement": {
+            "type": ["string", "null", "array", "object"]
+          },
+          "acceptance_criteria": {
+            "type": ["string", "null", "array", "object"]
+          },
+          "records": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
