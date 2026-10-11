@@ -26,7 +26,7 @@
       "expected_exit_code": 0,
       "passed": true,
       "log": "final-tests.log",
-      "test_count": 119
+      "test_count": 121
     },
     {
       "name": "compile",
@@ -133,13 +133,23 @@
     "All standards and reviews in tests are synthetic fixtures.",
     "Obsidian CLI/UI were not exercised against a real Vault.",
     "Docling, MinerU and translation-quality-codex backends are unavailable; offline file adapters only.",
-    "Remote PR and CI have not run."
+    "Remote PR created; four-way CI must pass before the V2.4 release."
   ],
   "clean_package": {
-    "test_count": 119,
+    "test_count": 121,
     "exit_code": 0,
     "passed": true,
     "log": "package-clean-tests.log",
     "method": "Build ZIP excluding run, extract to a new directory, discover extracted tests; all scripts/fixtures resolve to the extracted skill."
+  },
+  "release_validation": {
+    "local_tests": 121,
+    "exit_code": 0,
+    "legacy_stdout_encoding": "cp1252",
+    "fixes": [
+      "canonical Windows source paths",
+      "UTF-8 JSON stdout"
+    ],
+    "ci_status": "pending rerun before release"
   }
 }

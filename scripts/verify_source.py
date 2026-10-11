@@ -1,9 +1,18 @@
 """Coverage and provenance gate. A verified snapshot requires genuine supplied review evidence."""
-import argparse, hashlib, json
+import argparse, hashlib, json, os
 import re
 from pathlib import Path
 
 def _hash_bytes(b): return hashlib.sha256(b).hexdigest()
+def _same_resolved_path(left, right):
+    """Compare canonical local paths, failing closed for absent/invalid values."""
+    if not isinstance(left, (str, os.PathLike)) or not isinstance(right, (str, os.PathLike)) or not str(left) or not str(right):
+        return False
+    try:
+        return os.path.normcase(str(Path(left).resolve(strict=False))) == os.path.normcase(str(Path(right).resolve(strict=False)))
+    except (OSError, RuntimeError, TypeError, ValueError):
+        return False
+
 INVENTORY_KINDS=('pages','chapters','normative_annexes','tables','figures','references')
 def canonical_source_article(clauses):
     rows=[]
@@ -162,7 +171,7 @@ def verify_source(clauses, extraction, checklist, review_record=None, article_pa
             if not h.get('title') or not h.get('clause_id') or not hp or h.get('title') not in hp.get('text','') or not block or block.get('clause_id')!=h.get('clause_id'):
                 issues.append({'id':h.get('heading_id'),'reason':'heading title/clause/source binding mismatch','critical':True})
             hpage=hp.get('page') if hp and hp.get('page_kind')=='pdf' else None
-            if hs.get('file')!=source_file or hs.get('sha256')!=expected or not hp or hs.get('page_kind')!=hp.get('page_kind') or hs.get('pdf_page')!=hpage:
+            if not _same_resolved_path(hs.get('file'),source_file) or hs.get('sha256')!=expected or not hp or hs.get('page_kind')!=hp.get('page_kind') or hs.get('pdf_page')!=hpage:
                 issues.append({'id':h.get('heading_id'),'reason':'heading source file/page provenance mismatch','critical':True})
             seen.append(h.get('heading_id'))
         if len(seen)!=len(set(seen)): issues.append({'id':'heading_registry','reason':'duplicate heading IDs','critical':True})
@@ -201,6 +210,11 @@ def _unique_pairs(pairs):
     return d
 
 def main(argv=None):
+    try:
+        from json_io import configure_utf8_output
+        configure_utf8_output()
+    except (ImportError, AttributeError):
+        pass
     p=argparse.ArgumentParser(description=__doc__); p.add_argument('clauses'); p.add_argument('extraction'); p.add_argument('checklist'); p.add_argument('--review-record'); p.add_argument('--article'); p.add_argument('--inventory'); p.add_argument('--heading-registry',required=True); p.add_argument('--out',required=True); a=p.parse_args(argv)
     read=lambda x:json.loads(Path(x).read_text(encoding='utf-8-sig'),object_pairs_hook=_unique_pairs)
     try:

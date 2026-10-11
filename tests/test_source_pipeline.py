@@ -18,6 +18,27 @@ class SourcePipelineTests(unittest.TestCase):
  def test_registry_never_substitutes_block_id_for_title(self):
   r=build_registry([{'block_id':'4.1','kind':'paragraph'}],'abc'); self.assertEqual(r['headings'],[])
   r=build_registry([{'block_id':'B1','title':'4.1 Scope','clause_id':'4.1','kind':'heading'}],'abc'); self.assertEqual(r['headings'][0]['title'],'4.1 Scope')
+ def test_heading_file_binding_normalizes_separators_but_rejects_other_file(self):
+  import os
+  with tempfile.TemporaryDirectory() as td:
+   source=Path(td)/'standard.md'; source.write_text('Clause 1. Test 1.\nClause 2. Test 2.\nClause 3. Test 3.',encoding='utf-8')
+   raw=source.read_bytes(); h=hashlib.sha256(raw).hexdigest()
+   from local_parser import extract_document
+   clauses,extraction=self.fixture(); clauses['source']={'file':str(source),'sha256':h}; extraction=extract_document(source)
+   b=clauses['blocks'][0]; b.update(kind='heading',title='Clause 1.'); b['source'].update(file=str(source),sha256=h,page_kind='text',pdf_page=None,locator='text document')
+   extraction['pages'][0]['locator']='text document'
+   for row in clauses['blocks'][1:]: row['source'].update(file=str(source),sha256=h,page_kind='text',pdf_page=None,locator='text document')
+   article=Path(td)/'article.md'; article.write_bytes(canonical_source_article(clauses))
+   alt=str(source).replace('\\','/') if os.name=='nt' else str(source)
+   registry={'schema_version':'1.0','source_sha256':h,'headings':[{'heading_id':'H0001','block_id':'B1','title':'Clause 1.','clause_id':'1','order':1,'source':{'file':alt,'sha256':h,'page_kind':'text','pdf_page':None,'locator':'text document'}}]}
+   inventory={'pages':['text document'],'chapters':['1'],'normative_annexes':[],'tables':[],'figures':[],'references':[]}
+   checklist=[{'inventory_kind':'pages','inventory_id':'text document','status':'complete'},{'inventory_kind':'chapters','inventory_id':'1','status':'complete'}]
+   review={'reviewer':'R','reviewed_at':'today','approval_evidence':'manual'}
+   same=verify_source(clauses,extraction,checklist,review,article,expected_inventory=inventory,heading_registry=registry)
+   self.assertFalse(any(x.get('id')=='H0001' and 'file/page provenance' in x.get('reason','') for x in same['blockers']))
+   registry['headings'][0]['source']['file']=str(Path(td)/'other.md')
+   different=verify_source(clauses,extraction,checklist,review,article,expected_inventory=inventory,heading_registry=registry)
+   self.assertTrue(any(x.get('id')=='H0001' and 'file/page provenance' in x.get('reason','') for x in different['blockers']))
  def fixture(self):
   raw=b'PDF source'; h=hashlib.sha256(raw).hexdigest(); src={'file':'source.pdf','sha256':h}
   blocks=[{'block_id':f'B{i}','clause_id':str(i),'kind':'clause','source_lang':'en','original_text':f'Clause {i}. Test {i}.','source':{'file':'source.pdf','sha256':h,'pdf_page':i,'page_kind':'pdf','locator':f'PDF page {i}'}} for i in range(1,4)]

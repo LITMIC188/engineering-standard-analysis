@@ -174,4 +174,7 @@ def main():
     except Exception:
         result={"interface_id":"B-接口-05","interface_name":"publish_obsidian_bundle","job_id":"","schema_version":"1.0","result":{"ok":False,"status":"blocked","output_files":[],"details":{},"error":{"code":"INPUT_INVALID","message":"输入处理失败","retryable":False,"details":{}}}}
     print(json.dumps(result,ensure_ascii=False,indent=2)); return 0 if result["result"]["ok"] else 2
-if __name__=="__main__": sys.exit(main())
+if __name__=="__main__":
+    from json_io import configure_utf8_output
+    configure_utf8_output()
+    sys.exit(main())

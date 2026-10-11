@@ -427,4 +427,6 @@ def main():
 
 
 if __name__ == "__main__":
+    from json_io import configure_utf8_output
+    configure_utf8_output()
     sys.exit(main())

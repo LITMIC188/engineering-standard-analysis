@@ -94,4 +94,7 @@ def main():
     except AdapterError as e:r={"interface_id":"B-接口-04","interface_name":"verify_obsidian_publish","job_id":"","schema_version":"1.0","result":{"ok":False,"status":e.status,"output_files":[],"details":{},"error":{"code":e.code,"message":str(e),"retryable":e.retryable,"details":e.details}}}
     except Exception:r={"interface_id":"B-接口-04","interface_name":"verify_obsidian_publish","job_id":"","schema_version":"1.0","result":{"ok":False,"status":"blocked","output_files":[],"details":{},"error":{"code":"INPUT_INVALID","message":"输入处理失败","retryable":False,"details":{}}}}
     print(json.dumps(r,ensure_ascii=False,indent=2));return 0 if r["result"]["ok"] else 2
-if __name__=="__main__":sys.exit(main())
+if __name__=="__main__":
+    from json_io import configure_utf8_output
+    configure_utf8_output()
+    sys.exit(main())

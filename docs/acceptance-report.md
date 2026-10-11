@@ -24,7 +24,7 @@ Skill 版本为 2.4；既有 clauses/requirements/test_plan 的 `schema_version`
 
 ## 验证记录
 
-最终命令、退出码、测试数量与校验结果见 `evidence/final-validation.json`；完整测试日志见 `evidence/final-tests.log`。基线原有 41 项测试通过；最终 119/119 项通过。交付包在全新解包目录再次通过 119/119 项，日志见 `evidence/package-clean-tests.log`。最终包含独立负例及从真实合成文件提取开始的端到端测试。
+最终命令、退出码、测试数量与校验结果见 `evidence/final-validation.json`；完整测试日志见 `evidence/final-tests.log`。基线原有 41 项测试通过；首次开发验收 119/119 项通过。发布前补充 Windows 来源路径及旧控制台编码修复，最终 121/121 项通过，交付包在全新解包目录复验同样通过，日志见 `evidence/package-clean-tests.log`。最终包含独立负例及从真实合成文件提取开始的端到端测试。
 
 测试只使用虚构文本/合成 PDF 和临时 Vault。真实 CLI 回读在测试中使用受控替身验证失败处理，不等于已验证用户运行中的 Obsidian。PyYAML 静态解析不证明 Bases 在真实应用中的渲染效果。skill-creator 格式校验不证明标准或译文正确。
 
@@ -33,6 +33,6 @@ Skill 版本为 2.4；既有 clauses/requirements/test_plan 的 `schema_version`
 - 本机缺 Obsidian CLI，未提供实际 Vault：状态保留 `pending_cli_validation`，仅交付 staging 能力。后续在明确授权的测试范围验证实际 CLI、附件、Bases 视图和应用界面。
 - 未提供实际原标准、专业人工审核记录、产品适用范围和实验大纲：不生成真实标准 approved，不作产品符合结论。
 - Docling、MinerU、translation-quality-codex 未安装：仅支持离线结构文件/译文文件协议和缺依赖报告，后续按授权安装并验证实际后端。
-- 远端 PR、GitHub CI 与公开/私有发布尚未执行：本次交付本地可审查源码、差异文件与 ZIP，不上传标准、译文或附件。
+- PR #1 已提交；发布前修复首次 GitHub Windows CI 发现的路径表示及 stdout 编码问题。`main` 的四组 CI 全部通过后，由限于 V2.4 的发布流程创建 Release。最终远端状态以 PR、Actions 和 Release 页面为准；不上传用户标准、译文或 Vault 附件。
 
 发布包不包含 `run/`、第三方临时验证依赖、用户标准全文或个人 Vault。校验和随 ZIP 交付。原输入方案和用户 Vault 均未修改。

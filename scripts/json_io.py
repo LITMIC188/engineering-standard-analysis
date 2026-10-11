@@ -1,5 +1,6 @@
 """Strict JSON loading helpers; duplicate object keys are ambiguous and rejected."""
 import json
+import sys
 from pathlib import Path
 
 
@@ -18,3 +19,10 @@ def loads(text):
 
 def load(path):
     return loads(Path(path).read_text(encoding="utf-8-sig"))
+
+
+def configure_utf8_output():
+    """Emit JSON in UTF-8 even under a Windows legacy console code page."""
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")

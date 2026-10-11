@@ -1,0 +1,73 @@
+name: Publish V2.4 release
+on:
+  workflow_run:
+    workflows: [Offline synthetic regression]
+    types: [completed]
+permissions:
+  contents: read
+concurrency:
+  group: publish-v2.4
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      contains(github.event.workflow_run.head_commit.message, '[release v2.4]')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+      - name: Verify and publish the approved V2.4 artifacts
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const crypto = require('crypto');
+            const {owner, repo} = context.repo;
+            const tag = 'v2.4';
+            const sha = context.payload.workflow_run.head_sha;
+            const filename = 'engineering-standard-analysis-v2.4.zip';
+            const data = fs.readFileSync('dist/' + filename);
+            const checksum = fs.readFileSync('dist/' + filename + '.sha256');
+            const expected = checksum.toString('utf8').trim().split(/\s+/)[0];
+            const actual = crypto.createHash('sha256').update(data).digest('hex');
+            if (actual !== expected) throw new Error('Release ZIP SHA256 mismatch');
+            const body = fs.readFileSync('docs/release-v2.4.md', 'utf8');
+            const {data: releases} = await github.rest.repos.listReleases({owner, repo, per_page: 100});
+            let release = releases.find(r => r.tag_name === tag);
+            if (release && !release.draft) {
+              core.info('V2.4 is already published; preserving it.');
+              return;
+            }
+            if (!release) {
+              ({data: release} = await github.rest.repos.createRelease({
+                owner, repo, tag_name: tag, target_commitish: sha,
+                name: 'Engineering Standard Analysis V2.4', body,
+                draft: true, prerelease: false
+              }));
+            }
+            const files = [{name: filename, data}, {name: filename + '.sha256', data: checksum}];
+            const {data: assets} = await github.rest.repos.listReleaseAssets({owner, repo, release_id: release.id, per_page: 100});
+            for (const file of files) {
+              const digest = 'sha256:' + crypto.createHash('sha256').update(file.data).digest('hex');
+              const existing = assets.find(a => a.name === file.name);
+              if (existing) {
+                if (existing.digest !== digest) throw new Error('Existing release asset conflicts: ' + file.name);
+                continue;
+              }
+              const {data: uploaded} = await github.rest.repos.uploadReleaseAsset({
+                owner, repo, release_id: release.id, name: file.name,
+                data: file.data, headers: {'content-type': file.name.endsWith('.zip') ? 'application/zip' : 'text/plain'}
+              });
+              if (uploaded.digest && uploaded.digest !== digest) throw new Error('Uploaded asset digest mismatch');
+            }
+            const {data: published} = await github.rest.repos.updateRelease({
+              owner, repo, release_id: release.id, body, draft: false, prerelease: false, make_latest: 'true'
+            });
+            core.info(published.html_url);

@@ -14,6 +14,7 @@ test_reference_closure_checks_real_file_hash (test_audit_edge_cases.AuditEdgeCas
 test_requirement_source_spans_are_canonical_and_claim_checked (test_audit_edge_cases.AuditEdgeCases.test_requirement_source_spans_are_canonical_and_claim_checked) ... ok
 test_separate_complete_tests_are_evaluated_individually (test_audit_edge_cases.AuditEdgeCases.test_separate_complete_tests_are_evaluated_individually) ... ok
 test_two_unrelated_tests_cannot_combine_fields (test_audit_edge_cases.AuditEdgeCases.test_two_unrelated_tests_cannot_combine_fields) ... ok
+test_utf8_output_overrides_cp1252 (test_cli_encoding.CliEncoding.test_utf8_output_overrides_cp1252) ... ok
 test_testplan_bad_aligned_with_missing_conditions (test_contracts.TestContract.test_testplan_bad_aligned_with_missing_conditions) ... ok
 test_testplan_clean (test_contracts.TestContract.test_testplan_clean) ... ok
 test_testplan_fake_pass_without_evidence (test_contracts.TestContract.test_testplan_fake_pass_without_evidence) ... ok
@@ -93,6 +94,7 @@ test_100_line_ocr_synthetic_retains_raw_and_candidate_only (test_source_pipeline
 test_bad_cross_page_table_provenance_and_missing_translation_block (test_source_pipeline.SourcePipelineTests.test_bad_cross_page_table_provenance_and_missing_translation_block) ... ok
 test_dispatch_freeze_gate_and_chinese_skip (test_source_pipeline.SourcePipelineTests.test_dispatch_freeze_gate_and_chinese_skip) ... ok
 test_empty_checklist_inventory_unknown_appendix_and_article_tamper_block (test_source_pipeline.SourcePipelineTests.test_empty_checklist_inventory_unknown_appendix_and_article_tamper_block) ... ok
+test_heading_file_binding_normalizes_separators_but_rejects_other_file (test_source_pipeline.SourcePipelineTests.test_heading_file_binding_normalizes_separators_but_rejects_other_file) ... ok
 test_missing_appendix_and_critical_review_block_freeze (test_source_pipeline.SourcePipelineTests.test_missing_appendix_and_critical_review_block_freeze) ... ok
 test_registry_never_substitutes_block_id_for_title (test_source_pipeline.SourcePipelineTests.test_registry_never_substitutes_block_id_for_title) ... ok
 test_reviewed_wrong_numeric_translation_fails_validation_gate (test_source_pipeline.SourcePipelineTests.test_reviewed_wrong_numeric_translation_fails_validation_gate) ... ok
@@ -119,6 +121,6 @@ test_unhashable_legacy_block_id_does_not_crash (test_validation_extended.Extende
 test_source_to_bilingual_to_obsidian_dry_run (test_workflow_smoke.WorkflowSmoke.test_source_to_bilingual_to_obsidian_dry_run) ... ok
 
 ----------------------------------------------------------------------
-Ran 119 tests in 3.456s
+Ran 121 tests in 4.315s
 
 OK
