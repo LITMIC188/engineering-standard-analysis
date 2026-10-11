@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ESA Obsidian publish request and result",
+  "type": "object",
+  "required": ["interface_id", "interface_name", "job_id", "schema_version", "vault_root", "target_scope", "source_sha256", "dry_run", "payload"],
+  "properties": {
+    "interface_id": {"enum": ["B-接口-02", "B-接口-03", "B-接口-04"]},
+    "interface_name": {"enum": ["render_obsidian_markdown", "render_obsidian_base", "verify_obsidian_publish"]},
+    "job_id": {"type": "string", "minLength": 1},
+    "schema_version": {"const": "1.0"},
+    "vault_root": {"type": "string", "minLength": 1},
+    "target_scope": {"type": "string", "minLength": 1},
+    "source_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+    "dry_run": {"type": "boolean", "default": true},
+    "payload": {"type": "object"},
+    "result": {
+      "type": "object",
+      "required": ["ok", "status", "output_files", "details"],
+      "properties": {
+        "ok": {"type": "boolean"},
+        "status": {"enum": ["ok", "blocked", "retryable", "pending_cli_validation", "rolled_back"]},
+        "output_files": {"type": "array", "items": {"type": "string"}},
+        "details": {"type": "object"},
+        "error": {
+          "type": "object",
+          "required": ["code", "message", "retryable", "details"],
+          "properties": {"code": {"type": "string"}, "message": {"type": "string"}, "retryable": {"type": "boolean"}, "details": {"type": "object"}},
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

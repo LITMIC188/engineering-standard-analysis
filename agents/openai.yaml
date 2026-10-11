@@ -1,4 +1,4 @@
 interface:
   display_name: "Engineering Standard Analysis"
-  short_description: "工程标准双语解析、实验方案差距审查与本地来源证据追溯"
-  default_prompt: "使用 $engineering-standard-analysis 读取原始标准与现有实验方案，按条款双语对齐、提取要求、审查实验步骤与判定准则，并输出有页码来源的审查矩阵和整改建议。"
+  short_description: "工程标准原文核验、双语全文、实验方案审查与 Obsidian 发布预演"
+  default_prompt: "使用 $engineering-standard-analysis 核验原始标准，按同一冻结底稿生成源语和双语全文、要求与实验方案审查矩阵；如需 Obsidian，先输出发布预演及未决事项。"

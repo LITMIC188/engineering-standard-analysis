@@ -1,0 +1,155 @@
+{
+  "date": "2026-10-11",
+  "baseline_head": "3ef67a20180f6fd49461f78cf16dd716989028a7",
+  "baseline_tests": 41,
+  "skill_version": "2.4",
+  "schema_versions": {
+    "legacy": "2.0",
+    "source_and_obsidian": "1.0"
+  },
+  "ok": true,
+  "commands": [
+    {
+      "name": "final-tests",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "passed": true,
+      "log": "final-tests.log",
+      "test_count": 121
+    },
+    {
+      "name": "compile",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "-m",
+        "compileall",
+        "-q",
+        "scripts",
+        "tests"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "passed": true,
+      "log": "compile.log"
+    },
+    {
+      "name": "skill-format",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "skill-creator/scripts/quick_validate.py",
+        "."
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "passed": true,
+      "log": "skill-format.log"
+    },
+    {
+      "name": "schemas",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "-c",
+        "import sys;sys.path.insert(0,'scripts');from json_io import load;from pathlib import Path;from jsonschema import Draft202012Validator;files=list(Path('schemas').glob('*.json'));[Draft202012Validator.check_schema(load(p)) for p in files];print('Strict JSON and Draft202012 schema checks:',len(files))"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "passed": true,
+      "log": "schemas.log"
+    },
+    {
+      "name": "legacy-demo-en",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "scripts/validate_run.py",
+        "run/development-demo-001/en"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "passed": true,
+      "log": "legacy-demo-en.log"
+    },
+    {
+      "name": "legacy-demo-ja",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "scripts/validate_run.py",
+        "run/development-demo-001/ja"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "passed": true,
+      "log": "legacy-demo-ja.log"
+    },
+    {
+      "name": "strict-demo-negative",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "scripts/validate_translation.py",
+        "run/development-demo-001/en/translations/segments.json",
+        "--strict"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "passed": true,
+      "log": "strict-demo-negative.log"
+    },
+    {
+      "name": "diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "passed": true,
+      "log": "diff-check.log"
+    }
+  ],
+  "limitations": [
+    "All standards and reviews in tests are synthetic fixtures.",
+    "Obsidian CLI/UI were not exercised against a real Vault.",
+    "Docling, MinerU and translation-quality-codex backends are unavailable; offline file adapters only.",
+    "Remote PR created; four-way CI must pass before the V2.4 release."
+  ],
+  "clean_package": {
+    "test_count": 121,
+    "exit_code": 0,
+    "passed": true,
+    "log": "package-clean-tests.log",
+    "method": "Build ZIP excluding run, extract to a new directory, discover extracted tests; all scripts/fixtures resolve to the extracted skill."
+  },
+  "release_validation": {
+    "local_tests": 121,
+    "exit_code": 0,
+    "legacy_stdout_encoding": "cp1252",
+    "fixes": [
+      "canonical Windows source paths",
+      "UTF-8 JSON stdout"
+    ],
+    "ci_status": "pending rerun before release"
+  }
+}

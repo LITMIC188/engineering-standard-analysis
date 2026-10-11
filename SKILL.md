@@ -1,9 +1,9 @@
 ---
 name: engineering-standard-analysis
-description: 在本地解析工程标准，建立 ISO、JIS、IEC 等外文条款的中文对齐译文、来源矩阵，并审查现有实验方案的覆盖、步骤、工况和判定依据。用于标准条款查询、翻译、版本比较、实验大纲对标、设计验证追溯及经审核知识的 tutor 学习材料交接。不用于自动认证或仅凭方案判断产品合格。
+description: 在本地重建和核验工程标准原文，生成源语、中文及双语全文、工程要求矩阵，审查实验方案并预演 Obsidian Markdown/Bases 发布。用于标准条款查询、翻译、版本比较、实验大纲对标、设计验证追溯及已审知识学习交接；不用于自动认证或仅凭方案判断产品合格。
 ---
 
-# Engineering Standard Analysis — V2.1
+# Engineering Standard Analysis — V2.4
 
 ## 证据与边界
 
@@ -15,7 +15,13 @@ description: 在本地解析工程标准，建立 ISO、JIS、IEC 等外文条�
 
 ## 选择入口
 
-先读 [本地运行与证据契约](references/runtime-contract.md)。在本 Skill 目录运行 `python -X utf8 scripts/esa.py --help`；Windows 可使用用户已选择的 Python 绝对路径。缺本地 PDF 依赖时明确报错，不自行安装系统组件。
+先读 [本地运行与证据契约](references/runtime-contract.md)。路径作用域：`ESA_LOCAL` 是本 Skill 实际根目录；`RUN` 是本次全新 `ESA_LOCAL/run/<job-id>/`；`VAULT_ROOT` 是用户确认的本机 Vault 根目录，`VAULT_TARGET` 是其内明确授权的相对目标。历史用户名、盘符、标准号不作为默认值。用 `scripts/doctor.py` 只读检测本机 Skills、解析器和 CLI；读取将使用的实际第三方 SKILL.md。脚本参数以 `--help` 为准；缺依赖明确报错，不自行安装系统组件。
+
+## 原文优先的完整作业
+
+登记与保留源文件 → 原始提取/OCR → 校订候选与布局重建 → 原页、章节、规范性附录、表图和引用核验 → 冻结同一底稿。具体输入、命令和门禁读 [原文流水线](references/source-pipeline.md)。raw 永不被修复候选替换；数字、单位、公式和标题疑点未闭环只能交付草案与复核队列。
+
+冻结后优先进行源语言要求解析，外文专业中文翻译可与之条件并行。两支共用 `source_sha256`、版本、`clause_id`、`block_id`，译文不反写工程事实。中文原文跳过中文翻译；用户另需外文译本时单独启用翻译分支。生成完整源语文章、完整中文文章、双语文章；稳定 ID 用于锚点而不是章节标题。按条款核对双语和工程门禁后才进入发布。局部查询可以返回带明确范围和草案状态的证据，不冒称已冻结全标准。
 
 - `query` / `full-analysis`：运行 `prepare` 提取原文，按 [条款分析](references/standard-analysis.md) 识别条款、表/图、附录与引用。`prepare` 输出页/章节候选块，不声称已完成语义抽取。Codex 结合原页建立 `clauses.json` 与引用驱动的 `annotations.json`；逐条核验后运行矩阵流程。具体词句可用 `query`；多文件检索用 `corpus-query`，无命中不等于不存在要求。
 - `translate` / `bilingual`：读 [翻译策略](references/translation-policy.md) 和 [第三方适配](references/adapters.md)。优先核实 `translation-quality-codex`，用 `adapters.py prepare` 交接原文块，用 `import` 收回带审计 ID 的译文。先术语、再译文、再原页与规范强度审核；未安装时可在当前授权工作区制作相同格式的译文草案，不能声称调用了第三方。复杂可编辑格式或超长文档按需路由 [工具映射](references/skill-routing.md)，保留整表和页锚点。
@@ -24,6 +30,7 @@ description: 在本地解析工程标准，建立 ISO、JIS、IEC 等外文条�
 - `design-verification`：在审查命令提供 `--design` 建立要求→设计输入→试验→证据路径。给出的执行证据仅标 `provided_unverified`，人工检查真实性与适用性。
 - `study`：仅在用户要求时读 [tutor 交接](references/tutor-adapter.md)。运行 `study` 只输出来源可回查且有真实 `approved` 记录的学习原料；未审项排除。再读取本机 `tutor-setup/SKILL.md`，显式选择 Document Mode 和生成的 source 目录；本包没有跨 Skill RPC，也不自动创建已完成的 StudyVault。
 - `qms-readiness`：仅组织证据，按工具映射确认已安装的对应 Skill。当前无自动 QMS 评估后端，不能拿体系标准替代产品试验参数。
+- `obsidian`：读 [Obsidian 属性与接口](references/obsidian-mapping.md) 和 [发布工作流](references/obsidian-workflow.md)。先源文门禁，再 Markdown，随后 Bases，静态格式/链接/附件检查，再受控事务写入和 CLI 回读。三个 Skills 是指令入口，本包提供文件适配器，不假设跨 Skill RPC。默认只生成独立 staging；实际 Vault 未确认或 CLI 不可用时保持 `pending_cli_validation`，不能声称已在应用中验收。没有实际方案就不生成试验审查笔记。
 
 ## 交付和验收
 
