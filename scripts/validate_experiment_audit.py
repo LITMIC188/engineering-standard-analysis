@@ -79,6 +79,20 @@ def check(reqs,plan,audit,strict=False):
                 req=next((x for x in reqrows if isinstance(x,dict) and x.get('requirement_id')==rid),{})
                 if req.get('source_verified') is not True or req.get('applicability') in (None,'unknown'): issues.append(f'{tag}: unverified/unknown requirement cannot be aligned')
             if any(isinstance(cp,dict) and cp.get('status')=='unknown' for cp in checks): issues.append(f'{tag}: unknown checkpoint cannot be aligned')
+            # Recompute modern evidence-backed contracts rather than trusting a
+            # caller-supplied all-matched checkpoint list.
+            if strict:
+                req=next((r for r in reqrows if isinstance(r,dict) and r.get('requirement_id')==rid),{})
+                if isinstance(req.get('fields'),dict) and all(isinstance(t,dict) and isinstance(t.get('fields'),dict) for t in planrows):
+                    try:
+                        import importlib.util
+                        spec=importlib.util.spec_from_file_location('esa_audit_validator',Path(__file__).with_name('esa.py'))
+                        engine=importlib.util.module_from_spec(spec);spec.loader.exec_module(engine)
+                        recalculated=engine.audit(reqs,plan)
+                        actual=next(r for r in recalculated['items'] if r['requirement_id']==rid)
+                        if actual['status']!='aligned':issues.append(f'{tag}: evidence recomputation does not support aligned')
+                    except (ValueError,KeyError,TypeError,OSError) as error:
+                        issues.append(f'{tag}: evidence recomputation blocked: {error}')
         if strict and status in {'aligned','partial','conflict','missing'}:
             # Eight core dimensions; sequence is a valid extra detail under method.
             core={'test_item','method','conditions','sample','equipment','measurement','acceptance_criteria','records'}
@@ -99,7 +113,11 @@ def check(reqs,plan,audit,strict=False):
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('requirements');ap.add_argument('test_plan');ap.add_argument('audit');ap.add_argument('--csv',default=None);ap.add_argument('--strict',action='store_true');args=ap.parse_args()
-    reqs=json.loads(Path(args.requirements).read_text(encoding='utf-8'));plan=json.loads(Path(args.test_plan).read_text(encoding='utf-8'));audit=json.loads(Path(args.audit).read_text(encoding='utf-8'))
+    try:
+        from json_io import load
+        reqs=load(args.requirements);plan=load(args.test_plan);audit=load(args.audit)
+    except (OSError,ValueError) as error:
+        print(json.dumps({'ok':False,'issues':[str(error)]},ensure_ascii=False));return 2
     issues=check(reqs,plan,audit,strict=args.strict);summary=dict(Counter(x.get('status','unknown') for x in _list(audit,'items') if isinstance(x,dict)))
     if args.csv:
         out=Path(args.csv);out.parent.mkdir(parents=True,exist_ok=True)
@@ -107,7 +125,8 @@ def main():
             w=csv.DictWriter(fh,fieldnames=HEADERS);w.writeheader()
             for row in _list(audit,'items'):
                 if not isinstance(row,dict): continue
-                obj={k:row.get(k,'') for k in HEADERS};obj['test_ids']='; '.join(row.get('test_ids',[]));w.writerow(obj)
+                obj={k:row.get(k,'') for k in HEADERS};obj['test_ids']='; '.join(row.get('test_ids',[]))
+                w.writerow({k:("'"+v if isinstance(v,str) and v.startswith(('=','+','-','@')) else v) for k,v in obj.items()})
     print(json.dumps({'coverage_status_counts':summary,'issues':issues,'ok':not issues,'disclaimer':'结构一致性检查不是试验方案的技术符合性认定'},ensure_ascii=False,indent=2))
-    sys.exit(1 if issues else 0)
-if __name__=='__main__':main()
+    return 1 if issues else 0
+if __name__=='__main__':sys.exit(main())

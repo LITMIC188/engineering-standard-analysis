@@ -1,0 +1,12 @@
+{
+  "synthetic_only": true,
+  "job_id": "ESA-DEMO-001",
+  "standard_id": "TEST-STD-001",
+  "edition": "TEST-1",
+  "source_text": "Synthetic title: fictional normative statement.",
+  "block_id": "B0001",
+  "clause_id": "X.1",
+  "heading_title": "Synthetic title",
+  "requirement_quote": "fictional normative statement.",
+  "requirement_summary": "Synthetic fixture summary."
+}

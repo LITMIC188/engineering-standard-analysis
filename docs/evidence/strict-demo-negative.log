@@ -1,0 +1,11 @@
+{
+  "segments": 1,
+  "issues": [
+    "segment[1] (B0001): manual meaning review outstanding"
+  ],
+  "warnings": [
+    "segment[1] (B0001): normative-force/negation cue needs bilingual human review; source=['shall'], target=[]"
+  ],
+  "token_differences": [],
+  "ok": false
+}

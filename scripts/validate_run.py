@@ -4,6 +4,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from json_io import load
 
 FILES={'clauses.json':'clauses','requirements.json':'requirements','test_plan.json':'test_plan',
        'experiment_audit.json':'experiment_audit','translations/segments.json':'translation_segments'}
@@ -19,8 +20,8 @@ def validate_run(path):
         if not target.exists():
             if name.startswith('translations/') or name in ('test_plan.json','experiment_audit.json'):continue
             errors.append(name+': missing');continue
-        data=json.loads(target.read_text(encoding='utf-8'))
-        spec=json.loads((root/'schemas'/(schema+'.schema.json')).read_text(encoding='utf-8'))
+        data=load(target)
+        spec=load(root/'schemas'/(schema+'.schema.json'))
         Draft202012Validator.check_schema(spec)
         for error in Draft202012Validator(spec).iter_errors(data):
             errors.append(name+' / '+'/'.join(map(str,error.path))+': '+error.message)

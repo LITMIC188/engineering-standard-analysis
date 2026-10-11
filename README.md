@@ -1,41 +1,35 @@
 # engineering-standard-analysis
 
-V2.1 Codex Skill：本地工程标准双语解析、实验方案差距审查与可追溯学习材料交接。
+V2.4 本地开发版：原文核验、源语/中文/双语全文、实验方案差距审查与 Obsidian 文件发布适配。
 
-Skill 入口：[SKILL.md](SKILL.md)。完整运行契约：[references/runtime-contract.md](references/runtime-contract.md)。
+入口是 [SKILL.md](SKILL.md)，使用 `$engineering-standard-analysis`。以冻结源语原文为事实来源；外文解析与专业中文翻译可从同一底稿条件并行，中文原文跳译。自动结果保持草案，真实来源审核和工程审签分别记录，不自动认定产品合格或认证。
 
-## 安装
+## 使用与安装
 
-下载 [dist/engineering-standard-analysis-v2.1.zip](dist/engineering-standard-analysis-v2.1.zip)，校验 [SHA256SUMS](dist/SHA256SUMS)，将其中 `engineering-standard-analysis/` 放到一个 Skill 根目录。Windows 可选择 `%USERPROFILE%\.agents\skills` 或 `%USERPROFILE%\.codex\skills`；二选一，避免重复安装，不覆盖已有同名目录。
-
-也可将本仓库克隆到所选 Skill 根目录下的 `engineering-standard-analysis/`。Skill 名称为 `engineering-standard-analysis`，调用示例：
-
-```text
-使用 $engineering-standard-analysis，读取本地标准及现有实验方案，输出逐条要求、差距矩阵和整改建议。
-```
-
-## 本地运行
-
-文本、CSV、DOCX、XLSX 路径使用 Python 标准库；数字 PDF 需要本机已有 `pypdf` 或 `pdftotext`。PDF 演示还需要 `reportlab`；缺少依赖时可显式使用 Markdown 演示。不自动安装系统组件、下载 OCR 模型或调用外部翻译 API。
+将完整目录放入一个 Codex Skill 根目录，保留已有同名目录，避免重复安装。当前修改目标是工作区目录，没有自动安装到用户全局 Skills，也没有修改第三方 Skills。
 
 ```powershell
+python -X utf8 scripts/doctor.py --check-cli
 python -X utf8 scripts/esa.py --help
-python -X utf8 scripts/demo.py --out run/demo-check --format md
+python -X utf8 scripts/demo.py --out run/<new-demo> --format md
 python -X utf8 -m unittest discover -s tests -v
 ```
 
-审查入口 `audit-test-plan` 使用带原文引用的 `clauses.json`、`annotations.json` 和 `plan-annotations.json`，契约与完整示例见运行文档。自动提取页/章节候选块后，Codex/审核者建立原子要求及方案映射；不声称已完成全标准语义抽取。
+Python 标准库支持文本/CSV/DOCX/XLSX和自有 JSON 格式发布文件。数字PDF使用已有 `pypdf` 或 `pdftotext`；PDF演示需 `reportlab`。完整 JSON Schema 校验需本地 `jsonschema`；外来非JSON YAML可用本地 PyYAML。运行脚本不会自动安装组件、下载 OCR 模型或联网翻译。
 
-## 当前能力与边界
+## 运行说明
 
-- P0：本地解析、来源 SHA256/条款/物理页码或非 PDF 位置、TQC S-ID 双语文件适配、数字/单位/比较符/部分公式检查、13 维实验方案审查、双向覆盖与整改矩阵。
-- P1：要求矩阵、稳定 ID 的版本字段/文本差异、设计验证追溯、CSV/Markdown 报告。
-- P2：显式多文件关键词检索、超长块提示与整表保留、经审签知识的 tutor Document Mode 原料交接。
+- [本地运行与证据契约](references/runtime-contract.md)：旧入口、原子引用、多段方案来源、审查组、引用闭环、版本映射及显式迁移。
+- [原文流水线](references/source-pipeline.md)：OCR候选、几何布局、标题注册、完整性清单、冻结及全文交付。
+- [Obsidian 属性与接口](references/obsidian-mapping.md)、[发布工作流](references/obsidian-workflow.md)：要求笔记、Bases索引、默认staging、哈希清单、冲突拒绝、受控写入及回滚。
+- [质量门禁](references/quality-gates.md)：源文、翻译、工程判断与发布状态分开核验。
+- [输出契约](references/output-contract.md)、[第三方状态](references/skill-routing.md)：文件位置及已实现/未运行后端的边界。
+- [开发验收报告](docs/acceptance-report.md)：测试证据、方案条目对应、迁移和仍需真实环境验收的事项。
 
-八类第三方工程工具当前提供路由/本地替代入口，尚未安装执行其后端。TQC 已实现文件协议适配，但没有上游 Skill 或翻译 API 后端；其他翻译 Skill、扫描 OCR、格式保真翻译、全书翻译和向量检索仍需适配。详见 [工具状态](references/skill-routing.md) 与 [适配说明](references/adapters.md)。本包不包含这些第三方源码。
+Docling/MinerU 仅提供本地探测和导出结构的文件导入，不声称已运行解析后端。TQC仍是文件交接协议，没有内置翻译API。Obsidian三技能是已读取的本机指令规范，适配器是本包脚本；不假设跨技能RPC。CLI缺失或运行实例不明时返回pending，不能把合成mock/静态YAML通过写成应用内验收。
 
-## 验证
+## 发布包和验证边界
 
-开发验收：41 项自动化测试通过，Skill Creator 官方验证通过，英文/日文虚构 PDF 端到端检查完成，输出 JSON Schema 通过，并完成独立使用测试。严格翻译检查会对未人审的演示译文返回非零，这是预期门禁；不得为了通过检查伪造审核记录。
+V2.1原包保留于 `dist/`；[V2.4验收包](dist/engineering-standard-analysis-v2.4.zip) 和 [SHA256](dist/engineering-standard-analysis-v2.4.zip.sha256) 同样位于 `dist/`。本地完整差异补丁另存于工作目录的 `ESA_V2.4_2026-10-11/`。打包仅包含维护的Skill源码、模板、合成测试和开发文档，排除所有用户作业、标准正文、Vault内容和本地测试依赖。
 
-没有真实 ISO/JIS/IEC 标准或实际实验大纲包含在此仓库。演示与测试夹具均为虚构，测试专用审核元数据不是实际审签。无法核实的翻译、条款和实验条件保持未决；`aligned` 仅表示已建模字段的方案文本一致，不代表实际试验完成、产品合格或认证。`study` 只交接已批准知识，不自动运行或覆盖 `tutor-setup`。
+没有真实 ISO/JIS/IEC 标准或实际产品实验方案随包发布。测试夹具的审签字段明确属于合成测试，不是真实审核。`aligned` 只表示可核对字段的方案文本一致；章节/附录/表图/规范引用全局完整性独立判断。`study`只交接真实approved知识，不自动运行tutor或覆盖学习库。

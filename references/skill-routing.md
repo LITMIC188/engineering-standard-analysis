@@ -27,12 +27,12 @@
 - `iso-standards-readiness` 不提供产品标准具体试验限值。
 - `tutor-setup` 本机 `SKILL.md` 可能与 Github 版本不同：以现场本地版本为准；不能读取时仅输出准备好的学习原料，不声称已调用。
 
-## V2.1 实际接入状态
+## V2.4 实际接入状态
 
 | 原工具类别 | 本包实际可运行入口 | 第三方后端状态 |
 |---|---|---|
-| Docling | `local_parser.py` 本地数字 PDF/OOXML 文本降级 | 未安装、未执行；不含 Docling JSON 专用导入器 |
-| MinerU | 空白页/扫描件标缺失，保留本地 OCR 路由 | 未安装、未执行；无 OCR 模型自动下载 |
+| Docling | `local_parser.py` 降级 + `parser_adapters.py` 本地导出结构导入 | 状态以doctor为准；不会执行后端、API或安装依赖 |
+| MinerU | `parser_adapters.py` 本地结构导入、未知布局队列 | 不下载OCR模型；导入不是已执行OCR |
 | doc-query | `esa.py query` 已验证来源的块内查询 | 本地替代；未接社区工具执行接口 |
 | doc-extract | `prepare` + 引用驱动 annotations + `full-analysis` | 本地结构化替代；语义抽取由 Codex/审核者完成 |
 | doc-compare | `compare` 稳定 ID 字段/文本比对 | 本地替代；不推定技术等效或加严/放宽 |
@@ -44,3 +44,9 @@
 | tutor-setup | 已核对本机 Document Mode，`study` 原料 + handoff | 文件交接已实现；未自动调用，不覆盖原 Skill |
 
 已知源码接口依据见 [adapters.md](adapters.md)。其他项目保留原有候选网址，但没有逐一审计源码/许可证；使用前须核实，不能把本表当第三方完整集成清单。
+
+## Obsidian 本机规范
+
+`scripts/doctor.py` 检测实际 obsidian-markdown、obsidian-bases、obsidian-cli 的 SKILL.md 路径与SHA。渲染时读取其本机规范，后端采用本包 `obsidian_render.py / obsidian_publish.py / obsidian_verify.py` 文件适配。详见 [obsidian-mapping.md](obsidian-mapping.md)。技能安装不意味着CLI正在运行；只读CLI help亦不证明目标Vault或UI已验收。
+
+Docling导出类型与页来源按[官方DoclingDocument说明](https://docling-project.github.io/docling/reference/docling_document/)核对；页面几何含坐标原点，未知尺寸/原点时保留raw几何并进入复核，不默认解释上下顺序。新版本结构不匹配时明确拒绝，不猜测页码或单元格。

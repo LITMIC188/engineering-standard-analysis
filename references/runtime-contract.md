@@ -18,7 +18,7 @@ python -X utf8 scripts/esa.py audit-test-plan --clauses run/prepared-001/clauses
 
 ### clauses.json
 
-`schema_version: "2.0"` 保留 V2 契约；Skill 版本为 2.1。顶层 `standard_id`、`edition`、`source: {file, sha256}`、`blocks`。每块：
+`schema_version: "2.0"` 保留 V2 契约；Skill 版本为 2.4。顶层 `standard_id`、`edition`、`source: {file, sha256}`、`blocks`。每块：
 
 ```json
 {
@@ -46,7 +46,9 @@ python -X utf8 scripts/esa.py audit-test-plan --clauses run/prepared-001/clauses
 
 ### plan-annotations.json
 
-顶层 `plan_id`、`plan_version`、原方案真实 `source_sha256`、`tests`。每项含 `test_id`、`title`、`locator`（来自提取器）、`quote`（该位置的原文）、`requirement_ids`（显式多对多映射）、`fields`（同上，以方案原文引证）。不同段落可拆不同 test_id，并共同映射同一要求；不可丢失步骤顺序。未映射项目在反向覆盖矩阵单列。
+顶层 `plan_id`、`plan_version`、原方案真实 `source_sha256`、`tests`。每项含 `test_id`、`title`、`locator`（来自提取器）、`quote`（该位置的原文）、`requirement_ids`（显式多对多映射）、`fields`（同上，以方案原文引证）。跨段落优先在同一 test 内加 `source_spans:[{locator,quote,sequence}]`，顺序从1连续，每个span逐位置核验，总quote是各span以换行连接。字段可声明自己的span，以保持方法、工况、准则来自不同段落的来源。旧单locator/quote输入仍有效。
+
+多个测试共同映射一个要求不会自动联合其字段；先逐test核对。真实组合须明确 `protocol_id/phase/sample_group/combination_group` 和实际 `combination_evidence` 审核记录；无关联测试不能拼出aligned。未映射项目在反向覆盖矩阵单列。
 
 原文字段与方案字段逐字/空白归一后相同才自动 `matched`；相同文字、单位、运算符结构中仅数字不同才自动 `conflict`。其他不同措辞/不同语言/单位换算为 `unknown`，需工程判断。未审翻译将关联审查降为 `not_assessable`。这是保守文字检查，不是语义推理模型或完整标准法规判断。
 
@@ -76,6 +78,12 @@ python -X utf8 scripts/esa.py study --requirements run/audit-001/requirements.js
 本地关键词检索会记录检查文件和块数量；不是 MinerU Explorer 向量数据库。超长翻译块保持原子块并标记超长，需要审核后按真实条款边界拆块；当前没有自动全书翻译、增量恢复引擎或外部翻译后端。学习输出仅为 tutor Document Mode 原料和 handoff.json；0 条可用也会如实记录，未审内容不会混入学习源。
 
 ## 自检和失败
+
+全局完整性使用 `coverage`（required/modeled sections、规范性附录、表图清单和审核）及 `reference_closure`（各引用的解析状态、实际来源及resolution_review）。只设置 `source_complete=true` 或拥有局部aligned不足以使全局complete。风险字段 `risk_factors` 和实际 `risk_review` 解释严重度；无审签因子保留unknown。详细数据以当前schema及测试示例为准。
+
+`source_inventory` 从真实源文件重新提取的完整页面派生，`modeled_inventory` 从 clauses 派生，二者不能互相替代。`annotations.source_inventory_review` 需要 `status: "source_checked"`、同源 `source_sha256` 以及实际 `reviewer/reviewed_at/approval_evidence`。`source_page_coverage` 核对每个非空页的全部引文和提取警告；`manifest.modeled_source_complete` 单列建模覆盖。库存自动识别不能替代目录、标题、表图和引用的人审。
+
+`compare --mapping <file>` 支持 `mappings:[{old_requirement_id,new_requirement_id,mapping_type,review_record}]`，类型为 renumbering/amendment；只记录显式映射，输出needs_review，不自动宣称版本等效。旧v2输入显式迁移使用 `scripts/migrate_schema_v2.py <test_plan|requirements> <input> <new-output> --log <new-log>`，重复键拒绝，旧approved需要重新确认且迁移保留日志，不覆盖原件。
 
 `validate_translation.py --strict` 同时检查数字、单位、比较符、保护记号及审核记录；模态词/否定检查仅是人审提示。`validate_experiment_audit.py --strict` 是严格来源/维度门禁，会对未审要求报非零；普通校验用于草案结构。真实文件哈希/引用验证在 `esa.py` 执行，不是 JSON schema 能证明的事。
 

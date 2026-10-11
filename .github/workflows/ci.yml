@@ -1,0 +1,24 @@
+name: Offline synthetic regression
+on: [push, pull_request]
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.12', '3.14']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install test-only validators
+        run: python -m pip install jsonschema PyYAML pypdf reportlab
+      - name: Compile and run synthetic regressions
+        run: |
+          python -m compileall -q scripts tests
+          python -X utf8 -m unittest discover -s tests -v
+      - name: Offline demonstration and schema validation
+        run: |
+          python -X utf8 scripts/demo.py --out run/ci-demo --format md
+          python -X utf8 scripts/validate_run.py run/ci-demo/en

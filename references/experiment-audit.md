@@ -38,3 +38,11 @@
 - 横向覆盖：所有适用标准原子要求至少一条审查记录；若 `missing`/`conflict`/`partial`/`not_assessable` 任一存在，整体不得表达“方案满足全部标准要求”。
 - 纵向覆盖：即便一个 test_id 已映射 requirement_id，仍需逐项核对 method、conditions、sample、equipment、calibration、preconditioning、environment、measurement、duration、sequence、acceptance_criteria、records（标准未规定的维度标 `not_required`，而不是自动猜测）。
 - `aligned` 必须至少一维 `matched` 且无 `missing`/`conflict`/`unknown` 的适用维度；仅对**所获完整标准条款与方案文档的文本一致性**有效。
+
+## V2.4 证据组与全局门禁
+
+先逐个test评估；方法、工况和准则分散于同一方案多个段落时，使用同一test的有序source_spans，而不是生成无关联测试并联合字段。需要联合多个测试时，明确相同protocol_id、phase、sample_group、combination_group，并保存各测试真实combination_evidence。保留全部映射test_ids及逐候选evaluations，不因未能组合而删除映射证据。
+
+requirement_level与normative_nature共同决定audit_obligation。来源未核验、规范性质矛盾、适用条件或参考标准未闭环保持not_assessable；资料性说明不作为mandatory缺项。resolved引用须匹配实际引用文件和SHA及resolution_review，文件改变重新阻断。
+
+severity取决于实际审签risk_factors及risk_review，并在risk_rationale写明推导；缺因子或unknown不自动降级。局部字段aligned和全局coverage.complete分别报告，整体结论不能只统计aligned数量。规范性附录、表图或引用库存缺失必须保留未闭环状态。严格审查校验会对现代证据契约重新计算aligned，不仅相信调用者给出的matched列表。
