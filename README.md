@@ -33,3 +33,11 @@ Docling/MinerU 仅提供本地探测和导出结构的文件导入，不声称�
 V2.1原包保留于 `dist/`；[V2.4验收包](dist/engineering-standard-analysis-v2.4.zip) 和 [SHA256](dist/engineering-standard-analysis-v2.4.zip.sha256) 同样位于 `dist/`。本地完整差异补丁另存于工作目录的 `ESA_V2.4_2026-10-11/`。打包仅包含维护的Skill源码、模板、合成测试和开发文档，排除所有用户作业、标准正文、Vault内容和本地测试依赖。
 
 没有真实 ISO/JIS/IEC 标准或实际产品实验方案随包发布。测试夹具的审签字段明确属于合成测试，不是真实审核。`aligned` 只表示可核对字段的方案文本一致；章节/附录/表图/规范引用全局完整性独立判断。`study`只交接真实approved知识，不自动运行tutor或覆盖学习库。
+
+## 项目文件夹参考模板
+
+[下载项目模板 ZIP](docs/reference-attachments/engineering-standard-analysis-project-template.zip) · [SHA256 校验值](docs/reference-attachments/engineering-standard-analysis-project-template.zip.sha256)
+
+解压后复制整个模板作为新项目，先阅读 `00_开始使用.md` 和 `01_文件夹组织说明.md`。模板包含 12 个资料目录、各目录说明、项目登记、作业索引、资料台账、审核表单及交付登记；项目登记高亮 8 项通用必填字段，并说明条件必填和运行后记录项。说明文件采用 Obsidian Markdown。
+
+模板为 2026-10-12 整理的空项目参考附件，未包含标准正文、真实试验记录或人工审签证据。实际作业仍在完整技能根目录的 `run/<job-id>/` 中新建，项目资料、交付副本及 Obsidian 预演分别管理。
